@@ -5,7 +5,7 @@
         <button class="btn btn-light" @click="initiative.remove(props.turnIndex)"><i class="bi bi-trash"></i></button>
       </div>
       <div class="col-9 name  g-0">
-        <input id="namefield" class="form-control" @focusin="data.showSuggestions = true" @focusout="stopShowing()" v-model="props.turn.name">
+        <input autocomplete="off" id="namefield" class="form-control" @focusin="data.showSuggestions = true" @focusout="stopShowing()" v-model="props.turn.name">
       </div>
       <div class="col-2 rolled">
         <input type="number" @blur="initiative.save()" class="form-control text-center" v-model="props.turn.rolled">
@@ -105,7 +105,7 @@ input[type=number] {
   font-size: 16px;
   margin-left: 52px;
   width: 77%;
-  margin-top: 1rem;
+
 
   .suggestion{
     border-bottom: 1px solid #f2f2f2;
