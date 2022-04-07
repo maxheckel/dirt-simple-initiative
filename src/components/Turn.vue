@@ -5,15 +5,28 @@
         <button class="btn btn-light" @click="initiative.remove(props.turnIndex)"><i class="bi bi-trash"></i></button>
       </div>
       <div class="col-9 name  g-0">
-        <input class="form-control" @keyup="initiative.save()" v-model="props.turn.name">
+        <input id="namefield" class="form-control" @focusin="data.showSuggestions = true" @focusout="stopShowing()" v-model="props.turn.name">
       </div>
       <div class="col-2 rolled">
-        <input type="number" @keyup="initiative.save()" class="form-control text-center" v-model="props.turn.rolled">
+        <input type="number" @blur="initiative.save()" class="form-control text-center" v-model="props.turn.rolled">
       </div>
     </div>
-    <p v-for="name in names.list.filter((n) => n[0].toLowerCase() === 'a')">
-      {{name}}
-    </p>
+    <div v-if="names.list.length > 0 && data.showSuggestions" class="suggestions" >
+      <div class="suggestion" v-for="name in filteredNames()" >
+        <span class="clickable-name" @click="props.turn.name = name.target; data.showSuggestions = false; initiative.save()">
+          <span v-for="(letter, index) in name.target">
+            <b v-if="name.indexes.indexOf(index) >= 0">
+              {{letter}}
+            </b>
+            <span v-else>
+              {{letter}}
+            </span>
+
+          </span>
+        </span>
+        <div class="delete" @click="names.remove(name.target); data.dontSave = true;"><i class="bi bi-trash"></i></div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -21,9 +34,9 @@
 // in <script setup>
 import type {Turn} from "@/store/initiative";
 import {initiative} from '@/store/initiative';
-import {names} from "@/store/names";
-
-names.remove(1)
+import {names} from '@/store/names';
+import * as fuzzysort from "fuzzysort";
+import {reactive} from "vue";
 
 
 const props = defineProps<{
@@ -31,6 +44,32 @@ const props = defineProps<{
   turnIndex: number
 }>()
 
+const stopShowing = () => {
+
+  setTimeout(() => {
+    data.showSuggestions = true;
+    if (data.dontSave){
+      data.dontSave = false;
+      return
+    }
+    initiative.save();
+    names.add(props.turn.name);
+    names.save()
+  }, 500)
+}
+const data = reactive({
+  showSuggestions: false,
+  dontSave: false
+});
+
+
+
+const filteredNames = () => {
+  const res = fuzzysort.go(props.turn.name, names.list)
+  console.log(res)
+  console.log(names.list)
+  return res.filter(value => value.target.toLowerCase() !== props.turn.name.toLowerCase())
+}
 
 </script>
 
@@ -62,6 +101,30 @@ input[type=number] {
   }
 }
 
+.suggestions{
+  font-size: 16px;
+  margin-left: 52px;
+  width: 77%;
+  margin-top: 1rem;
+
+  .suggestion{
+    border-bottom: 1px solid #f2f2f2;
+    align-items: center;
+    justify-content: normal;
+    vertical-align: middle;
+    padding: 10px 0px;
+    margin-bottom: 0px;
+    cursor: pointer;
+    .delete{
+      float: right;
+      margin-right: 10px;
+    }
+    &:hover{
+        background-color: #f2f2f2;
+    }
+  }
+}
+
 @media(max-width: 790px){
   .turn {
 
@@ -74,6 +137,10 @@ input[type=number] {
       z-index: 1000;
     }
   }
+}
+.clickable-name{
+  width: calc(100% - 30px);
+  display: inline-block;
 }
 
 @media(max-width: 500px){

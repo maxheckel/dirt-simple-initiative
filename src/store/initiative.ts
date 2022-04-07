@@ -1,4 +1,5 @@
 import { reactive } from 'vue'
+import {names} from "@/store/names";
 
 export interface Turn {
     name: string;
@@ -46,6 +47,7 @@ export const initiative = reactive<Initiative>({
         if (turnsString !== null){
             this.turns = JSON.parse(turnsString)
         }
+        names.load()
     },
     save() {
         localStorage.setItem("initiative", JSON.stringify(this.turns))
