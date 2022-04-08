@@ -5,7 +5,7 @@
         <button class="btn btn-light" @click="initiative.remove(props.turnIndex)"><i class="bi bi-trash"></i></button>
       </div>
       <div class="col-9 name  g-0">
-        <input autocomplete="off" id="namefield" class="form-control" @focusin="data.showSuggestions = true" @focusout="stopShowing()" v-model="props.turn.name">
+        <input autocomplete="off" class="form-control" @focusin="data.showSuggestions = true" @focusout="stopShowing()" v-model="props.turn.name">
       </div>
       <div class="col-2 rolled">
         <input type="number" @blur="initiative.save()" class="form-control text-center" v-model="props.turn.rolled">
@@ -47,7 +47,7 @@ const props = defineProps<{
 const stopShowing = () => {
 
   setTimeout(() => {
-    data.showSuggestions = true;
+    data.showSuggestions = false;
     if (data.dontSave){
       data.dontSave = false;
       return

@@ -7,7 +7,7 @@
   <main>
     <div class="row" style="padding-bottom: 10px;">
       <div class="col">
-        <p class="h3">Dirt Simple Initiative</p>
+        <h1 style="font-size: 1.5rem">Dirt Simple Initiative</h1>
       </div>
       <div class="col-1" style="margin-right: 30px;">
         <button class="btn btn-light" @click="initiative.sort()"><i class="bi bi-sort-down"></i>
